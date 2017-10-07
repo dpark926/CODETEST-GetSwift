@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import '../styles/GetSwift.css'
+import Moment from 'react-moment';
 
 class GetSwift extends Component {
   constructor () {
@@ -38,21 +39,57 @@ class GetSwift extends Component {
     console.log(this.state.packageData)
   }
 
+  assign = () => {
+    // this.setState({
+    //   droneData: [],
+    //   packageData: [],
+    // })
+    
+    // .then( data => this.setState({
+    //   weatherData: this.state.weatherData.concat([data]),
+    //   addCity: !this.state.addCity,
+    //   input: '',
+    //   error: '',
+    // }))
+  }
+
   render = () => {
     let warehouseDrone = 0
     let droneData = this.state.droneData.map( drone => {
       if (drone.packages.length === 0) {
         warehouseDrone += 1
       }
-      return (
-        <div className="drone">
-          <p>Drone ID: {drone.droneId}</p>
-          <p>It's Current Location:</p>
-          <p>- {drone.location.latitude}</p>
-          <p>- {drone.location.longitude}</p>
-          <p>Holding Package:</p>
-        </div>
-      )
+
+      if (drone.packages.length === 0) {
+        return (
+          <div className="drone">
+            <p>Drone ID: {drone.droneId}</p>
+            <p>It's Current Location:</p>
+            <p>lat: {drone.location.latitude}</p>
+            <p>lon: {drone.location.longitude}</p>
+          </div>
+        )
+      } else {
+        return (
+          <div className="drone">
+            <p>Drone ID: {drone.droneId}</p>
+            <p>It's Current Location:</p>
+            <p>lat: {drone.location.latitude}</p>
+            <p>lon: {drone.location.longitude}</p>
+            <div className='drone-package'>
+              <div className='drone-package-header'><p>HOLDING PACKAGE:</p></div>
+              <p>Status: ENROUTE</p>
+              <p>Package ID: {drone.packages[0].packageId}</p>
+              <p>Deadline: <Moment unix>{drone.packages[0].deadline}</Moment></p>
+              <p>Destination</p>
+              <p>lat: {drone.packages[0].destination.latitude}</p>
+              <p>lon: {drone.packages[0].destination.longitude}</p>
+              <p>Time of Completion: </p>
+            </div>
+          </div>
+        )
+      }
+
     })
 
     let packageData = this.state.packageData.map( eachPackage => {
@@ -62,27 +99,43 @@ class GetSwift extends Component {
           <p>Destination:</p>
           <p>- {eachPackage.destination.latitude}</p>
           <p>- {eachPackage.destination.longitude}</p>
-          <p>Deadline: {eachPackage.deadline}</p>
+          <p>Deadline: <Moment unix>{eachPackage.deadline}</Moment></p>
+          <p>Time Left: <Moment fromNow><Moment unix>{eachPackage.deadline}</Moment></Moment></p>
+          {/* <p>Time Left: <Moment unix>{eachPackage.deadline}</Moment></p>
+          <p><Moment interval={30000}>
+                1976-04-19T12:59-0500
+            </Moment></p> */}
         </div>
       )
     })
 
+    // const dateToFormat = new Date();
+    // <div><Moment interval={1000}>{dateToFormat}</Moment></div>
+
+
     return (
       <div>
         <h1>GetSwift's Code Test</h1>
-        <div className='button' onClick={this.logData}>SHOW DATA</div>
+        <div className='button' onClick={this.logData}>SHOW DATA (console.log)</div>
+        <div className='button' onClick={this.assign}>MANUAL ASSIGN!</div>
+
+        <div className='summary'>
+          <div className='drone-data'>
+            <h3>DRONE DATA</h3>
+            <p>There are {this.state.droneData.length} drones in total</p>
+            <p>There are {warehouseDrone} drones in the warehouse</p>
+            <p>There are {this.state.droneData.length - warehouseDrone} drones enroute</p>
+          </div>
+          <div className='package-data'>
+            <h3>PACKAGE DATA</h3>
+            There are {this.state.packageData.length} unassigned packages
+          </div>
+        </div>
 
         <div className="droneSection">
-          <h1>DRONE DATA</h1>
-          <p>There are {this.state.droneData.length} drones in total</p>
-          <p>There are {warehouseDrone} drones in the warehouse</p>
-          <p>There are {this.state.droneData.length - warehouseDrone} drones out</p>
-
           {droneData}
         </div>
         <div className="packageSection">
-          <h1>PACKAGE DATA</h1>
-          There are {this.state.packageData.length} unassigned packages
           {packageData}
         </div>
       </div>
