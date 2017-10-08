@@ -1,4 +1,4 @@
-![app](./img/app.png)
+![app](./imgs/app.png)
 
 # ANALYSIS
 
@@ -18,11 +18,11 @@ For each API, I laid put a summary of how many drones and packages there are in 
 
 Every package contains a Unix timestamp. I used this value to sort all the packages according to whichever is most urgent. I compared the deadline with the current time to determine the that is left.  Each unassigned package is color coated in red.
 
-![package](./img/package.png)
+![package](./imgs/package.png)
 
 ### SORT BUTTON
 
-![sort](./img/sort.png)
+![sort](./imgs/sort.png)
 
 The sort button sorts all the packages according to whichever is most urgent.
 
@@ -36,13 +36,13 @@ The drones API returns a random list of drones with their id, location and packa
 
 Each drone is either carrying a package or not. However, all drones have a current location that is different of the depo which means that they are on its way back to the depo. I have also incorporate the time that'll take for them to reach the depo. These drones are highlighted in orange which indicates that they are available for delivery.
 
-![drone](./img/drone.png)
+![drone](./imgs/drone.png)
 
-![unassigned](./img/unassigned.png)
+![unassigned](./imgs/unassigned.png)
 
 ### ASSIGN BUTTON
 
-![assign](./img/assign.png)
+![assign](./imgs/assign.png)
 
 The "assign" button assigns all available drone with the most urgent packages. The solution of "assignments" and "unassignedPackageIds" can be viewed on the console.
 
