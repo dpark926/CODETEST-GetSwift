@@ -6,9 +6,16 @@ class GetSwift extends Component {
   constructor () {
     super();
 
+    let d = new Date()
     this.state = {
       droneData: [],
       packageData: [],
+      hour: d.getHours(),
+      minute: d.getMinutes(),
+      second: d.getSeconds(),
+      depoLat: -37.816664,
+      depoLon: 144.963848,
+      solution: {},
     }
   }
 
@@ -42,12 +49,13 @@ class GetSwift extends Component {
   assign = () => {
     let droneData = this.state.droneData
     let packageData = this.state.packageData
+    let solution = {assignments: [], unassignedPackageIds: []}
 
     let newDroneData = droneData.map( drone => {
       if (drone.packages.length === 0) {
-        // let pkg = packageData.shift()
         if (packageData.length > 0) {
           drone.packages = [packageData.shift()]
+          solution.assignments.push({droneId: drone.droneId, packageId: drone.packages[0].packageId})
           return drone
         } else {
           drone.packages = []
@@ -58,11 +66,17 @@ class GetSwift extends Component {
       }
     })
 
+    for (var i = 0; i < packageData.length; i++) {
+      solution.unassignedPackageIds.push(packageData[i].packageId)
+    }
+
     this.setState({
       droneData: newDroneData,
       packageData: packageData,
+      solution: solution,
     })
-    // debugger
+
+    console.log(solution)
   }
 
   sortPackageData = () => {
@@ -76,6 +90,9 @@ class GetSwift extends Component {
     })
   }
 
+  showSolution = () => {
+
+  }
 
   render = () => {
     let warehouseDrone = 0
@@ -87,15 +104,12 @@ class GetSwift extends Component {
       if (drone.packages.length === 0) {
         let lat1 = drone.location.latitude
         let lon1 = drone.location.longitude
-
-        let lat2 = -37.816664
-        let lon2 = 144.963848
         var R = 6371; // Radius of the earth in km
-        var dLat = (lat2-lat1) * (Math.PI/180);
-        var dLon = (lon2-lon1) * (Math.PI/180);
+        var dLat = (this.state.depoLat-lat1) * (Math.PI/180);
+        var dLon = (this.state.depoLon-lon1) * (Math.PI/180);
         var a =
           Math.sin(dLat/2) * Math.sin(dLat/2) +
-          Math.cos((lat1) * (Math.PI/180)) * Math.cos((lat2) * (Math.PI/180)) *
+          Math.cos((lat1) * (Math.PI/180)) * Math.cos((this.state.depoLat) * (Math.PI/180)) *
           Math.sin(dLon/2) * Math.sin(dLon/2)
           ;
         var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
@@ -164,7 +178,6 @@ class GetSwift extends Component {
           </div>
         )
       }
-
     })
 
     let packageData = this.state.packageData.map( eachPackage => {
@@ -173,23 +186,20 @@ class GetSwift extends Component {
       var packageMinutes = "0" + packageDate.getMinutes();
       var packageSeconds = "0" + packageDate.getSeconds();
 
-      var nowDate = new Date();
-      var nowHours = nowDate.getHours();
-      var nowMinutes = "0" + nowDate.getMinutes();
-      var nowSeconds = "0" + nowDate.getSeconds();
-
       return (
         <div className="package">
           <p className="bold">Package ID: {eachPackage.packageId}</p>
-          <div className='destination'>
-            <p>Destination:</p>
+          <div className='package-awaiting'>
+            <div className='destination'>
+              <p>Destination:</p>
+            </div>
+            <div className='destination'>
+              <p>lat: {eachPackage.destination.latitude}</p>
+              <p>long: {eachPackage.destination.longitude}</p>
+            </div>
+            <p>Deadline: <Moment unix>{eachPackage.deadline}</Moment></p>
+            <p>Time Left: {(packageHours - this.state.hour) === 1 || packageHours === 0 ? 0 : ((packageHours - this.state.hour) + 24) % 24} Hours {((packageMinutes - this.state.minute) + 60) % 60} Min {((packageSeconds - this.state.second) + 60) % 60} Sec</p>
           </div>
-          <div className='destination'>
-            <p>lat: {eachPackage.destination.latitude}</p>
-            <p>long: {eachPackage.destination.longitude}</p>
-          </div>
-          <p>Deadline: <Moment unix>{eachPackage.deadline}</Moment></p>
-          <p>Time Left: {(packageHours - nowHours) === 1 || packageHours ===0 ? 0 : ((packageHours - nowHours) + 24) % 24} Hours {((packageMinutes - nowMinutes) + 60) % 60} Min {((packageSeconds - nowSeconds) + 60) % 60} Sec</p>
         </div>
       )
     })
@@ -197,9 +207,8 @@ class GetSwift extends Component {
     return (
       <div>
         <h1>GetSwift's Code Test</h1>
-        <div className='button' onClick={this.logData}>SHOW DATA (console.log)</div>
-        <div className='button' onClick={this.assign}>MANUAL ASSIGN!</div>
-        <div className='button' onClick={this.sortPackageData}>SORT PACKAGE DATA</div>
+        <div className='button' onClick={this.logData}>SHOW DATA (console)</div>
+
         <p>The depo is located at 303 Collins Street, Melbourne, VIC 3000</p>
         <p>Latitude: -37.816664, Longitude: 144.963848</p>
 
@@ -207,8 +216,8 @@ class GetSwift extends Component {
           <div className='drone-data'>
             <h3>DRONE DATA</h3>
             <p>There are {this.state.droneData.length} drones in total</p>
-            <p>There are {warehouseDrone} drones in the warehouse</p>
-            <p>There are {this.state.droneData.length - warehouseDrone} drones enroute</p>
+            <p>There are {this.state.droneData.length - warehouseDrone} drones ENROUTE</p>
+            <p>There are {warehouseDrone} drones AVAILABLE</p>
           </div>
           <div className='package-data'>
             <h3>PACKAGE DATA</h3>
@@ -217,9 +226,11 @@ class GetSwift extends Component {
         </div>
 
         <div className="droneSection">
+          <div className='button' onClick={this.assign}>ASSIGN DRONES</div>
           {droneData}
         </div>
         <div className="packageSection">
+          <div className='button' onClick={this.sortPackageData}>SORT PACKAGES</div>
           {packageData}
         </div>
       </div>

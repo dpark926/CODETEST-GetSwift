@@ -90,6 +90,19 @@
   padding: 0px 10px;
 }
 
+.package-awaiting {
+  margin: 10px auto;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 20px;
+  font-size: 14px;
+  color: white;
+  background-color: #ff6f69;
+  background-position: 10px 10px;
+  background-repeat: no-repeat;
+  padding: 0px 10px;
+}
+
 .package {
   border: 1px solid black;
   /*width: 300px;*/
