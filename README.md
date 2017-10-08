@@ -24,7 +24,7 @@ Every package contains a Unix timestamp. I used this value to sort all the packa
 
 ![sort](./imgs/sort.png)
 
-The sort button sorts all the packages according to whichever is most urgent.
+The sort button sorts all the packages according to whichever is most urgent. In a real application, this button would not be necessary. All the packages would be sorted automatically in time intervals.
 
 ## GET /drones
 
@@ -32,7 +32,9 @@ The sort button sorts all the packages according to whichever is most urgent.
 - Location
 - Package Info
 
-The drones API returns a random list of drones with their id, location and package (if carrying). The first thing to notice is that every drone has a current location which can be compared with the location of the depo. I'm using the Halversine formula to calculate the distance between one point to another. With that, I can then determine the time that'll take for the drone to reach its destination.
+The drones API returns a random list of drones with their id, location and package (if carrying). The first thing to notice is that every drone has a current location which can be compared with the location of the depo. I'm using the Halversine formula to calculate the distance between one point to another. With that, I used the amount of hours as a point of reference to determine the amount of hours, minutes and seconds that are left for the drone to reach its destination.
+
+For formula for time is : time = distance/speed
 
 Each drone is either carrying a package or not. However, all drones have a current location that is different of the depo which means that they are on its way back to the depo. I have also incorporate the time that'll take for them to reach the depo. These drones are highlighted in orange which indicates that they are available for delivery.
 
@@ -44,6 +46,6 @@ Each drone is either carrying a package or not. However, all drones have a curre
 
 ![assign](./imgs/assign.png)
 
-The "assign" button assigns all available drone with the most urgent packages. The solution of "assignments" and "unassignedPackageIds" can be viewed on the console.
+The "assign" button assigns all available drone with the most urgent packages. In a real application, this button would not be necessary. All the packages would be sorted automatically in time intervals. The solution of "assignments" and "unassignedPackageIds" can then be viewed on the console.
 
-# ASSESSMENT
+![solution](./imgs/solution.png)
