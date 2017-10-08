@@ -32,7 +32,7 @@ The sort button sorts all the packages according to whichever is most urgent. In
 - Location
 - Package Info
 
-The drones API returns a random list of drones with their id, location and package (if carrying). The first thing to notice is that every drone has a current location which can be compared with the location of the depo. I'm using the Halversine formula to calculate the distance between one point to another. With that, I used the amount of hours as a point of reference to determine the amount of hours, minutes and seconds that are left for the drone to reach its destination.
+The drones API returns a random list of drones with their id, location and package (if carrying). The first thing to notice is that every drone has a current location which can be compared with the location of the depo. I'm using the Haversine formula to calculate the distance between one point to another. With that, I used the amount of hours as a point of reference to determine the amount of hours, minutes and seconds that are left for the drone to reach its destination.
 
 For formula for time is : time = distance/speed
 
