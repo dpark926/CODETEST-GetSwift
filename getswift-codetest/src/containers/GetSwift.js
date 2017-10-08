@@ -65,6 +65,18 @@ class GetSwift extends Component {
     // debugger
   }
 
+  sortPackageData = () => {
+    let packageData = this.state.packageData
+    packageData.sort( (a, b) => {
+      return parseFloat(a.deadline) - parseFloat(b.deadline);
+    })
+
+    this.setState({
+      packageData: packageData,
+    })
+  }
+
+
   render = () => {
     let warehouseDrone = 0
     let droneData = this.state.droneData.map( drone => {
@@ -130,6 +142,9 @@ class GetSwift extends Component {
         <h1>GetSwift's Code Test</h1>
         <div className='button' onClick={this.logData}>SHOW DATA (console.log)</div>
         <div className='button' onClick={this.assign}>MANUAL ASSIGN!</div>
+        <div className='button' onClick={this.sortPackageData}>SORT PACKAGE DATA</div>
+        <p>The depo is located at 303 Collins Street, Melbourne, VIC 3000</p>
+        <p>Latitude: -37.816664, Longitude: 144.963848</p>
 
         <div className='summary'>
           <div className='drone-data'>
