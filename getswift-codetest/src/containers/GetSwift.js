@@ -40,17 +40,24 @@ class GetSwift extends Component {
   }
 
   assign = () => {
-    // this.setState({
-    //   droneData: [],
-    //   packageData: [],
-    // })
-    
-    // .then( data => this.setState({
-    //   weatherData: this.state.weatherData.concat([data]),
-    //   addCity: !this.state.addCity,
-    //   input: '',
-    //   error: '',
-    // }))
+    let droneData = this.state.droneData
+    let packageData = this.state.packageData
+
+    let newDroneData = droneData.map( drone => {
+      if (drone.packages.length === 0) {
+        let pkg = packageData.shift()
+        drone.packages = [pkg]
+        return drone
+      } else {
+        return drone;
+      }
+    })
+
+    this.setState({
+      droneData: newDroneData,
+      packageData: packageData,
+    })
+    // debugger
   }
 
   render = () => {
@@ -60,7 +67,7 @@ class GetSwift extends Component {
         warehouseDrone += 1
       }
 
-      if (drone.packages.length === 0) {
+      if (drone.packages.length === 0 || drone.packages === 0) {
         return (
           <div className="drone">
             <p>Drone ID: {drone.droneId}</p>
