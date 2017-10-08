@@ -87,27 +87,44 @@ class GetSwift extends Component {
       if (drone.packages.length === 0) {
         return (
           <div className="drone">
-            <p>Drone ID: {drone.droneId}</p>
-            <p>It's Current Location:</p>
-            <p>lat: {drone.location.latitude}</p>
-            <p>lon: {drone.location.longitude}</p>
+            <p className="bold">Drone ID: {drone.droneId}</p>
+            <div className='destination'>
+              <p>Current Location:</p>
+            </div>
+            <div className='destination'>
+              <p>lat: {drone.location.latitude}</p>
+              <p>lon: {drone.location.longitude}</p>
+            </div>
+            <div className='drone-returning'>
+              <div className='drone-package-header'><p>EMPTY DRONE</p></div>
+              <p>Status: RETURNING TO DEPO</p>
+              <p>Estimate Time of Arrival: </p>
+            </div>
           </div>
         )
       } else {
         return (
           <div className="drone">
-            <p>Drone ID: {drone.droneId}</p>
-            <p>It's Current Location:</p>
-            <p>lat: {drone.location.latitude}</p>
-            <p>lon: {drone.location.longitude}</p>
+            <p className="bold">Drone ID: {drone.droneId}</p>
+            <div className='destination'>
+              <p>Current Location:</p>
+            </div>
+            <div className='destination'>
+              <p>lat: {drone.location.latitude}</p>
+              <p>lon: {drone.location.longitude}</p>
+            </div>
             <div className='drone-package'>
               <div className='drone-package-header'><p>HOLDING PACKAGE:</p></div>
               <p>Status: ENROUTE</p>
               <p>Package ID: {drone.packages[0].packageId}</p>
               <p>Deadline: <Moment unix>{drone.packages[0].deadline}</Moment></p>
-              <p>Destination</p>
-              <p>lat: {drone.packages[0].destination.latitude}</p>
-              <p>long: {drone.packages[0].destination.longitude}</p>
+              <div className='destination'>
+                <p>Destination</p>
+              </div>
+              <div className='destination'>
+                <p>lat: {drone.packages[0].destination.latitude}</p>
+                <p>long: {drone.packages[0].destination.longitude}</p>
+              </div>
               <p>Time of Completion: </p>
             </div>
           </div>
@@ -117,14 +134,33 @@ class GetSwift extends Component {
     })
 
     let packageData = this.state.packageData.map( eachPackage => {
+      var packageDate = new Date(eachPackage.deadline*1000);
+      var packageHours = packageDate.getHours();
+      var packageMinutes = "0" + packageDate.getMinutes();
+      var packageSeconds = "0" + packageDate.getSeconds();
+
+      var nowDate = new Date();
+      var nowHours = nowDate.getHours();
+      var nowMinutes = "0" + nowDate.getMinutes();
+      var nowSeconds = "0" + nowDate.getSeconds();
+
       return (
         <div className="package">
-          <p>Package ID: {eachPackage.packageId}</p>
-          <p>Destination:</p>
-          <p>lat: {eachPackage.destination.latitude}</p>
-          <p>long: {eachPackage.destination.longitude}</p>
+          <p className="bold">Package ID: {eachPackage.packageId}</p>
+          <div className='destination'>
+            <p>Destination:</p>
+          </div>
+          <div className='destination'>
+            <p>lat: {eachPackage.destination.latitude}</p>
+            <p>long: {eachPackage.destination.longitude}</p>
+          </div>
           <p>Deadline: <Moment unix>{eachPackage.deadline}</Moment></p>
-          <p>Time Left: <Moment fromNow><Moment unix>{eachPackage.deadline}</Moment></Moment></p>
+          {/* <p>Time Left: <Moment toNow><Moment unix>{eachPackage.deadline}</Moment></Moment></p> */}
+          {/* <p>Package Deadline: {packageHours + ':' + packageMinutes.substr(-2) + ':' + packageSeconds.substr(-2)}</p> */}
+          {/* <p>Time NOW: {nowHours + ':' + nowMinutes.substr(-2) + ':' + nowSeconds.substr(-2)}</p> */}
+          <p>Time Left: {(packageHours - nowHours) === 1 || packageHours ===0 ? 0 : ((packageHours - nowHours) + 24) % 24} Hours {((packageMinutes - nowMinutes) + 60) % 60} Min {((packageSeconds - nowSeconds) + 60) % 60} Sec</p>
+
+
           {/* <p>Time Left: <Moment unix>{eachPackage.deadline}</Moment></p>
           <p><Moment interval={30000}>
                 1976-04-19T12:59-0500
