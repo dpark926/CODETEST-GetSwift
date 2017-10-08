@@ -85,6 +85,22 @@ class GetSwift extends Component {
       }
 
       if (drone.packages.length === 0) {
+        let lat1 = drone.location.latitude
+        let lon1 = drone.location.longitude
+
+        let lat2 = -37.816664
+        let lon2 = 144.963848
+        var R = 6371; // Radius of the earth in km
+        var dLat = (lat2-lat1) * (Math.PI/180);
+        var dLon = (lon2-lon1) * (Math.PI/180);
+        var a =
+          Math.sin(dLat/2) * Math.sin(dLat/2) +
+          Math.cos((lat1) * (Math.PI/180)) * Math.cos((lat2) * (Math.PI/180)) *
+          Math.sin(dLon/2) * Math.sin(dLon/2)
+          ;
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        var d = R * c; // Distance in km
+
         return (
           <div className="drone">
             <p className="bold">Drone ID: {drone.droneId}</p>
@@ -98,11 +114,28 @@ class GetSwift extends Component {
             <div className='drone-returning'>
               <div className='drone-package-header'><p>EMPTY DRONE</p></div>
               <p>Status: RETURNING TO DEPO</p>
-              <p>Estimate Time of Arrival: </p>
+              <p>Distance from Destination: {d.toString().slice(0, 4)} KM</p>
+              <p>Estimate Time of Arrival: {Math.round((d / 50) * 60)} Min</p>
             </div>
           </div>
         )
       } else {
+        let lat1 = drone.location.latitude
+        let lon1 = drone.location.longitude
+
+        let lat2 = drone.packages[0].destination.latitude
+        let lon2 = drone.packages[0].destination.longitude
+        var R = 6371; // Radius of the earth in km
+        var dLat = (lat2-lat1) * (Math.PI/180);
+        var dLon = (lon2-lon1) * (Math.PI/180);
+        var a =
+          Math.sin(dLat/2) * Math.sin(dLat/2) +
+          Math.cos((lat1) * (Math.PI/180)) * Math.cos((lat2) * (Math.PI/180)) *
+          Math.sin(dLon/2) * Math.sin(dLon/2)
+          ;
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        var d = R * c; // Distance in km
+
         return (
           <div className="drone">
             <p className="bold">Drone ID: {drone.droneId}</p>
@@ -125,7 +158,8 @@ class GetSwift extends Component {
                 <p>lat: {drone.packages[0].destination.latitude}</p>
                 <p>long: {drone.packages[0].destination.longitude}</p>
               </div>
-              <p>Time of Completion: </p>
+              <p>Distance from Destination: {d.toString().slice(0, 4)} KM</p>
+              <p>Estimate Time of Completion: {Math.floor((d / 50) * 60)} Min {Math.round(((d / 50) * 3600) % 60)} Sec</p>
             </div>
           </div>
         )
@@ -155,23 +189,10 @@ class GetSwift extends Component {
             <p>long: {eachPackage.destination.longitude}</p>
           </div>
           <p>Deadline: <Moment unix>{eachPackage.deadline}</Moment></p>
-          {/* <p>Time Left: <Moment toNow><Moment unix>{eachPackage.deadline}</Moment></Moment></p> */}
-          {/* <p>Package Deadline: {packageHours + ':' + packageMinutes.substr(-2) + ':' + packageSeconds.substr(-2)}</p> */}
-          {/* <p>Time NOW: {nowHours + ':' + nowMinutes.substr(-2) + ':' + nowSeconds.substr(-2)}</p> */}
           <p>Time Left: {(packageHours - nowHours) === 1 || packageHours ===0 ? 0 : ((packageHours - nowHours) + 24) % 24} Hours {((packageMinutes - nowMinutes) + 60) % 60} Min {((packageSeconds - nowSeconds) + 60) % 60} Sec</p>
-
-
-          {/* <p>Time Left: <Moment unix>{eachPackage.deadline}</Moment></p>
-          <p><Moment interval={30000}>
-                1976-04-19T12:59-0500
-            </Moment></p> */}
         </div>
       )
     })
-
-    // const dateToFormat = new Date();
-    // <div><Moment interval={1000}>{dateToFormat}</Moment></div>
-
 
     return (
       <div>
