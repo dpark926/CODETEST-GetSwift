@@ -45,9 +45,14 @@ class GetSwift extends Component {
 
     let newDroneData = droneData.map( drone => {
       if (drone.packages.length === 0) {
-        let pkg = packageData.shift()
-        drone.packages = [pkg]
-        return drone
+        // let pkg = packageData.shift()
+        if (packageData.length > 0) {
+          drone.packages = [packageData.shift()]
+          return drone
+        } else {
+          drone.packages = []
+          return drone
+        }
       } else {
         return drone;
       }
@@ -67,7 +72,7 @@ class GetSwift extends Component {
         warehouseDrone += 1
       }
 
-      if (drone.packages.length === 0 || drone.packages === 0) {
+      if (drone.packages.length === 0) {
         return (
           <div className="drone">
             <p>Drone ID: {drone.droneId}</p>
@@ -90,7 +95,7 @@ class GetSwift extends Component {
               <p>Deadline: <Moment unix>{drone.packages[0].deadline}</Moment></p>
               <p>Destination</p>
               <p>lat: {drone.packages[0].destination.latitude}</p>
-              <p>lon: {drone.packages[0].destination.longitude}</p>
+              <p>long: {drone.packages[0].destination.longitude}</p>
               <p>Time of Completion: </p>
             </div>
           </div>
@@ -104,8 +109,8 @@ class GetSwift extends Component {
         <div className="package">
           <p>Package ID: {eachPackage.packageId}</p>
           <p>Destination:</p>
-          <p>- {eachPackage.destination.latitude}</p>
-          <p>- {eachPackage.destination.longitude}</p>
+          <p>lat: {eachPackage.destination.latitude}</p>
+          <p>long: {eachPackage.destination.longitude}</p>
           <p>Deadline: <Moment unix>{eachPackage.deadline}</Moment></p>
           <p>Time Left: <Moment fromNow><Moment unix>{eachPackage.deadline}</Moment></Moment></p>
           {/* <p>Time Left: <Moment unix>{eachPackage.deadline}</Moment></p>
