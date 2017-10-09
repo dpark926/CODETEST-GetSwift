@@ -52,6 +52,6 @@ The "assign" button assigns all available drone with the most urgent packages. I
 
 # BUILD AND RUN THE APP
 
-- Import/Fork the repo
+- Import/Clone the repo
 - run npm install
 - run npm start
